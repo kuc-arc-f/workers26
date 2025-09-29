@@ -62,13 +62,12 @@ export const itemsApi = {
   },
 
   update: async (id: number, item: Partial<NewItem>): Promise<Item> => {
-    item.id = id;
     const send = {
       id: id,
       content : CONTENT,
       data : JSON.stringify(item) 
     }
-
+    console.log(send)
     const response = await fetch(`/api/data/update`, {
       method: 'POST',
       headers: {

@@ -75,16 +75,21 @@ export default function App() {
         <div className="rounded p-2 bg-white">
           <h3 className="text-2xl font-bold">{row.original.data.name}</h3>
           <br />
-          <span className="ms-2">Id: {row.original.id}</span>
+          <span className="ms-2">ID: {row.original.id}</span>
           <span className="ms-2">
-            <a href={`/task_item?project_id=${row.original.id}`}>[ show ]</a>
+            <a href={`/task_item?project_id=${row.original.id}`}>
+              <button 
+              className="text-blue-600 hover:text-blue-800 font-medium px-2 py-1 border border-blue-600 rounded"
+              >Show</button>            
+            </a>
           </span>
-          {/*
           <span className="ms-2">
-            <button onClick={() => handleDelete(row.original.id)}
-              className="text-red-400">[ delete ]</button>
+            <button onClick={() => handleEdit(row.original)}>
+              <button 
+              className="text-blue-600 hover:text-blue-800 font-medium px-2 py-1 border border-blue-600 rounded"
+              >Edit</button>            
+            </button>
           </span>
-          */}
         </div>
       ),
     },
@@ -107,8 +112,8 @@ export default function App() {
   // 編集ダイアログを開く
   const handleEdit = (item: Item) => {
     console.log(item);
-    item.title = item.data.title;
-    item.description = item.data.description;
+    item.name = item.data.name;
+    //item.description = item.data.description;
     setDialogMode('edit');
     setEditingItem(item);
     setDialogOpen(true);
@@ -121,7 +126,8 @@ export default function App() {
       if (dialogMode === 'create') {
         await itemsApi.create(itemData);
       } else if (editingItem) {
-        await itemsApi.update(editingItem.id, itemData);
+        const target = {name: itemData.name}
+        await itemsApi.update(editingItem.id, target);
       }
       await fetchItems();
       setError(null);
@@ -142,11 +148,6 @@ export default function App() {
       setError('削除に失敗しました');
     }
   };
-
-  const sortTest = async function(){
-      const target = await dbUtil.getItems(sqlDb);
-      console.log(target);
-  }
 
   const sortStart = async function(col , order){
       const target = await dbUtil.sortItem(sqlDb, col, order);
