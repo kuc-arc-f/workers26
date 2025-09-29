@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts,tsx,css", 
+  "ignore": ["routes/**/*.txt"],
+  "exec": "npm run build"
+}
