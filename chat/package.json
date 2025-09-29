@@ -1,0 +1,37 @@
+{
+	"name": "workers26",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build": "npx vite build --config vite.app.config.ts && npm run build:css",
+		"build:css": "npx tailwindcss -i ./src/input.css -o ./public/main.css",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"cf-typegen": "wrangler types"
+	},
+	"dependencies": {
+		"@libsql/client": "^0.15.15",
+		"@tailwindcss/cli": "^4.1.4",
+		"@tanstack/react-table": "^8.21.3",
+		"axios": "^1.12.2",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tailwindcss": "^4.1.4",
+		"vite": "^6.2.0",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.9.7",
+		"@cloudflare/workers-types": "^4.20250410.0",
+		"@types/react": "^19.0.10",
+		"@types/react-dom": "^19.0.4",
+		"@vitejs/plugin-react": "^4.3.4",
+		"nodemon": "^3.1.9",
+		"typescript": "^5.5.2",
+		"vitest": "~3.0.7",
+		"wrangler": "^4.10.0"
+	}
+}
