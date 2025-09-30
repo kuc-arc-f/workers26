@@ -1,10 +1,6 @@
 import ReactDOM from 'react-dom/client'
-import React, { useState, useEffect } from 'react';
-import {itemsApi} from './TaskItem/api'
-import Head from '../components/Head'
+import React, { useState } from 'react';
 
-const CONTENT = "task_item";
-let projectId = 1;
 
 interface Task {
   id: number;
@@ -29,30 +25,6 @@ const TaskCRUDApp: React.FC = () => {
   });
   const [errors, setErrors] = useState<{ title?: string }>({});
 
-
-  // アイテム一覧を取得
-  const fetchItems = async () => {
-    try {
-      const searchParams = new URLSearchParams(window.location.search);
-      const id = searchParams.get('project_id') || "";
-      projectId = Number(id);
-      //getItem(itemId);      
-      //setLoading(true);
-      const data = await itemsApi.getAll(CONTENT, projectId);
-      console.log(data);
-      setTasks(data);
-      /*
-      setDbItems(target)
-      */
-    } catch (err) {
-      setError('アイテムの取得に失敗しました');
-    }
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
   const resetForm = () => {
     setFormData({
       title: '',
@@ -67,14 +39,13 @@ const TaskCRUDApp: React.FC = () => {
 
   const openDialog = (task?: Task) => {
     if (task) {
-      console.log(task)
       setEditingTask(task);
       setFormData({
-        title: task.data.title,
-        status: task.data.status,
-        start: task.data.start,
-        end: task.data.end,
-        content: task.data.content
+        title: task.title,
+        status: task.status,
+        start: task.start,
+        end: task.end,
+        content: task.content
       });
     } else {
       resetForm();
@@ -98,37 +69,31 @@ const TaskCRUDApp: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = async () => {
-    try{
-      if (!validateForm()) {
-        return;
-      }
+  const handleSave = () => {
+    if (!validateForm()) {
+      return;
+    }
 
-      if (editingTask) {
-        console.log(formData)
-        console.log("id=", editingTask.id)
-        await itemsApi.update(editingTask.id, formData);
-        fetchItems();
-      } else {
-        const newTask: Task = {
-          ...formData,
-          id: Date.now()
-        };
-        console.log(newTask)
-        await itemsApi.create(projectId, newTask);
-        fetchItems();
-      }
-      
-      closeDialog();
-
-    }catch(e){ console.log(e) }
+    if (editingTask) {
+      setTasks(tasks.map(task => 
+        task.id === editingTask.id 
+          ? { ...formData, id: editingTask.id }
+          : task
+      ));
+    } else {
+      const newTask: Task = {
+        ...formData,
+        id: Date.now()
+      };
+      setTasks([...tasks, newTask]);
+    }
+    
+    closeDialog();
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     if (window.confirm('このタスクを削除しますか?')) {
-      //setTasks(tasks.filter(task => task.id !== id));
-      await itemsApi.delete(Number(id));
-      fetchItems();
+      setTasks(tasks.filter(task => task.id !== id));
     }
   };
 
@@ -153,18 +118,12 @@ const TaskCRUDApp: React.FC = () => {
   // フィルタリングされたタスクを取得
   const filteredTasks = tasks.filter(task => {
     if (statusFilter === 'all') return true;
-    return task.data.status === statusFilter;
+    return task.status === statusFilter;
   });
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <Head />
-      <a href="/task_project">
-        <button type="button" 
-        className="mt-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-        >Back</button>
-      </a>
-      <div className="max-w-6xl mx-auto mt-2">
+      <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">タスク管理</h1>
           <div className="flex items-center gap-4">
@@ -183,7 +142,7 @@ const TaskCRUDApp: React.FC = () => {
                 <option value="working">作業中</option>
                 <option value="complete">完了</option>
               </select>
-            </div>         
+            </div>
             <button
               onClick={() => openDialog()}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -208,20 +167,20 @@ const TaskCRUDApp: React.FC = () => {
               {filteredTasks.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                    タスクがありません
+                    {statusFilter === 'all' ? 'タスクがありません' : `${getStatusLabel(statusFilter)}のタスクがありません`}
                   </td>
                 </tr>
               ) : (
                 filteredTasks.map(task => (
                   <tr key={task.id} className="border-b hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-800">{task.data.title}</td>
+                    <td className="px-6 py-4 text-sm text-gray-800">{task.title}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                        {getStatusLabel(task.data.status)}
+                        {getStatusLabel(task.status)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{task.data.start}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{task.data.end}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{task.start}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{task.end}</td>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => openDialog(task)}
@@ -354,7 +313,7 @@ const TaskCRUDApp: React.FC = () => {
                 <textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  rows={3}
+                  rows={8}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
               </div>
@@ -376,7 +335,6 @@ const TaskCRUDApp: React.FC = () => {
 };
 
 export default TaskCRUDApp;
-
 
 ReactDOM.createRoot(document.getElementById('app')).render(
   <div>

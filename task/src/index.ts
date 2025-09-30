@@ -13,6 +13,7 @@ import Todo13 from './pages/Todo13';
 import Chat from './pages/Chat';
 import TaskItem from './pages/TaskItem';
 import TaskProject from './pages/TaskProject';
+import Test from './pages/Test';
 
 import Login from './pages/login';
 import UsePrice from './pages/use_price';
@@ -31,6 +32,7 @@ export default {
     //console.log("PASSWORD=", env.PASSWORD);
 		let response = null;
 		try{
+      /*
 			if (path === "/test") {
 				const currentTime = new Date().toISOString();
 				return new Response(
@@ -39,6 +41,7 @@ export default {
 					status: 200
 				});
 			}
+      */
       
       if (path.startsWith("/api/todos/")) {
         response = await todoRouter(request, env, Response);
@@ -109,6 +112,10 @@ export default {
 			}
 			if (path === "/task_project") {
 				const htm = TaskProject({});
+				return new Response(htm, { headers: {"Content-Type": "text/html"} });
+			}
+			if (path === "/test") {
+				const htm = Test({});
 				return new Response(htm, { headers: {"Content-Type": "text/html"} });
 			}
 
