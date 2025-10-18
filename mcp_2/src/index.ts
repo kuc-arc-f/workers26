@@ -182,6 +182,12 @@ async function handleInitialize(params) {
   };
 }
 
+/**
+*
+* @param
+*
+* @return
+*/
 async function handleToolsList(params) {
   return {
     tools: [
@@ -230,11 +236,26 @@ async function handleToolsList(params) {
           },
           required: ['name', 'price']
         }
+      },     
+      {
+        name: 'purchase_list',
+        description: '購入品リストを、表示します。',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: []
+        }
       },      
     ]
   };
 }
 
+/**
+*
+* @param
+*
+* @return
+*/
 async function handleToolsCall(params, env) {
   const { name, arguments: args } = params;
 
@@ -295,12 +316,41 @@ async function handleToolsCall(params, env) {
           isError: true
         };
       }      
-    
+    case 'purchase_list':
+      try {
+        const client = buildLibsqlClient(env);
+        const resp = await purchase.listPurchase(client);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: resp,
+            }
+          ]
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error fetching data: ${error.message}`
+            }
+          ],
+          isError: true
+        };
+      } 
+
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
 }
 
+/**
+*
+* @param
+*
+* @return
+*/
 async function handleResourcesList(params) {
   return {
     resources: [
@@ -374,6 +424,12 @@ async function handlePromptsGet(params) {
   throw new Error(`Prompt not found: ${name}`);
 }
 
+/**
+*
+* @param
+*
+* @return
+*/
 function buildLibsqlClient(env: Env) {
   const url = env.TURSO_DATABASE_URL?.trim();
   if (url === undefined) {
