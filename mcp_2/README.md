@@ -80,5 +80,7 @@ npm run dev
 ***
 ### blog 
 
+https://zenn.dev/knaka0209/scraps/35f4c1dfbe1480
+
 ***
 
