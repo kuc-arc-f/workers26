@@ -62,6 +62,19 @@ npm run dev
 
 ```
 ***
+* settings.json : GEMINI-CLI
+```
+    "myRemoteServer": {
+      "httpUrl": "http://127.0.0.1:8787", 
+      "headers": {
+        "Authorization": "" 
+      },
+      "timeout": 5000 
+    }    
+```
+
+
+***
 * table : schema.sql
 
 ***
