@@ -46,6 +46,7 @@ npm run dev
 	 */
   "vars": { 
     "MY_VARIABLE": "production_value" ,
+    "API_KEY" : "123",
     "TURSO_DATABASE_URL" :"",
     "TURSO_AUTH_TOKEN" : ""
   },

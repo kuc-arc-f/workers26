@@ -28,6 +28,18 @@ export default {
     }
 
     try {
+      const authError = checkAuth(request, env);
+      //console.log("authError=", authError);
+      if (!authError) {
+        return new Response(
+          JSON.stringify({
+            jsonrpc: "2.0",
+            error: { code: -32001, message: "Unauthorized" },
+          }),
+          { status: 401, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
       const body = await request.json();
       const response = await handleJsonRpc(body, env);
       
@@ -56,6 +68,20 @@ export default {
     }
   }
 };
+// ---------------------------
+// 認証チェック関数
+// ---------------------------
+function checkAuth(request: Request, env: Env): boolean {
+  let ret = false;
+  const authHeader = request.headers.get("Authorization");
+  const expected = env.API_KEY?.trim();
+  console.log("authHeader=", authHeader);
+
+  if (authHeader !== expected) {
+    return ret;
+  }
+  return true;
+}
 
 /**
  * Handle JSON-RPC 2.0 requests
