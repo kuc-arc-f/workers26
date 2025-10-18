@@ -1,0 +1,31 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "workers26mcp",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-04-10",
+	"observability": {
+		"enabled": true
+	},
+
+	/**
+	 * Environment Variables
+	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+	 */
+	"vars": { 
+		"MY_VARIABLE": "production_value" ,
+		"TURSO_DATABASE_URL" :"",
+		"TURSO_AUTH_TOKEN" : ""
+  },
+	/**
+	 * Static Assets
+	 * https://developers.cloudflare.com/workers/static-assets/binding/
+	 */
+	//"assets": { "directory": "./public/", "binding": "ASSETS" },
+	"assets": {
+    "directory": "./public/"
+  },
+}
