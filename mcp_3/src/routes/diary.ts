@@ -1,4 +1,5 @@
 import sqlUtil from "../lib/sqlUtil";
+import dayjs from "dayjs";
 
 const diary = {
 
@@ -41,10 +42,12 @@ const diary = {
       let out = "";
       resp.rows.forEach((element) => {
         let target = JSON.parse(element.data)
+        let dt = dayjs(element.created_at).format('YYYY-MM-DD');
         //let row = `* ID: ${element.id}\n${target.text}\n`;
-        let row = `* ID: ${element.id}\n${target.text}\n`;
-        //console.log(row)
-        out += row;
+        let row = `* ID: ${element.id} , ${dt}\n${target.text}\n`;
+        let outRow = row.substring(0, 50);
+        //console.log(dt)
+        out += outRow + "\n";
       });
       return out
     }catch(e){
@@ -70,7 +73,8 @@ const diary = {
       if(resp.rows[0]){
         const target = resp.rows[0];
         const data = JSON.parse(target.data)
-        out = `* ID: ${target.id} ${target.created_at}\n` + `${data.text}\n`;
+        let dt = dayjs(target.created_at).format('YYYY-MM-DD');
+        out = `* ID: ${target.id} , ${dt}\n` + `${data.text}\n`;
       }
       return out;
     }catch(e){
