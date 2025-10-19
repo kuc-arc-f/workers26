@@ -79,6 +79,16 @@ npm run dev
 * table : schema.sql
 
 ***
+* prompt
+```
+お茶 150 円 をAPIに送信して欲しい
+```
+***
+* image
+
+![img1](/image/mcp_2.png)
+
+***
 ### blog 
 
 https://zenn.dev/knaka0209/scraps/35f4c1dfbe1480
