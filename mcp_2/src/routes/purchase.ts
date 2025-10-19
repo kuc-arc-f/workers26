@@ -32,7 +32,7 @@ const purchase = {
       resp.rows.forEach((element) => {
         let target = JSON.parse(element.data)
         //console.log(target)
-        let row = `* name: ${target.name} , prices: ${target.price} 円\n`;
+        let row = `* name: ${target.name} , price: ${target.price} 円\n`;
         out += row;
       });
       //console.log(out)
